@@ -31,3 +31,25 @@ export type Commit = {
   author: string;
   date: string;
 };
+
+// Parameter types for GitHubService methods
+export type GetRepositoryPullRequestsParams = {
+  owner: string;
+  repo: string;
+  fromDate?: string;
+  toDate?: string;
+};
+
+export type GetPullRequestCommitsParams = {
+  owner: string;
+  repo: string;
+  pullNumber: number;
+};
+
+export type GetRepositoryCommitsParams = {
+  owner: string;
+  repo: string;
+  author?: string;
+  fromDate?: string;
+  toDate?: string;
+};

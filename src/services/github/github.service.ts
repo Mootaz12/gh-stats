@@ -5,6 +5,9 @@ import {
   Repository,
   PullRequest,
   Commit,
+  GetRepositoryPullRequestsParams,
+  GetPullRequestCommitsParams,
+  GetRepositoryCommitsParams,
 } from '@app-types/github.types';
 import {
   UserNotFoundError,
@@ -95,12 +98,12 @@ export class GitHubService {
   /**
    * Fetch pull requests for a repository (with optional date filtering)
    */
-  async getRepositoryPullRequests(
-    owner: string,
-    repo: string,
-    fromDate?: string,
-    toDate?: string,
-  ): Promise<PullRequest[]> {
+  async getRepositoryPullRequests({
+    owner,
+    repo,
+    fromDate,
+    toDate,
+  }: GetRepositoryPullRequestsParams): Promise<PullRequest[]> {
     const prs: PullRequest[] = [];
     let page = 1;
     const perPage = 100;
@@ -150,11 +153,11 @@ export class GitHubService {
   /**
    * Fetch commits for a specific pull request
    */
-  async getPullRequestCommits(
-    owner: string,
-    repo: string,
-    pullNumber: number,
-  ): Promise<Commit[]> {
+  async getPullRequestCommits({
+    owner,
+    repo,
+    pullNumber,
+  }: GetPullRequestCommitsParams): Promise<Commit[]> {
     const commits: Commit[] = [];
     let page = 1;
     const perPage = 100;
@@ -193,13 +196,13 @@ export class GitHubService {
   /**
    * Fetch all commits for a repository (with optional date filtering and author filtering)
    */
-  async getRepositoryCommits(
-    owner: string,
-    repo: string,
-    author?: string,
-    fromDate?: string,
-    toDate?: string,
-  ): Promise<Commit[]> {
+  async getRepositoryCommits({
+    owner,
+    repo,
+    author,
+    fromDate,
+    toDate,
+  }: GetRepositoryCommitsParams): Promise<Commit[]> {
     const commits: Commit[] = [];
     let page = 1;
     const perPage = 100;

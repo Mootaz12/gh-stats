@@ -89,13 +89,13 @@ async function main() {
       // Case 1: Only commits (no PRs) - fetch all repository commits
       if (shouldFetchCommits && !shouldFetchPrs && !shouldFetchRepos) {
         for (const repo of repos) {
-          const commits = await githubService.getRepositoryCommits(
-            username,
-            repo.name,
-            username, // Filter by the user
-            options.from,
-            options.to,
-          );
+          const commits = await githubService.getRepositoryCommits({
+            owner: username,
+            repo: repo.name,
+            author: username, // Filter by the user
+            fromDate: options.from,
+            toDate: options.to,
+          });
 
           if (commits.length > 0) {
             formatter.printRepositorySection(repo.name);
@@ -107,23 +107,23 @@ async function main() {
       else if (shouldFetchPrs) {
         // Fetch PRs and optionally their commits
         for (const repo of repos) {
-          const prs = await githubService.getRepositoryPullRequests(
-            username,
-            repo.name,
-            options.from,
-            options.to,
-          );
+          const prs = await githubService.getRepositoryPullRequests({
+            owner: username,
+            repo: repo.name,
+            fromDate: options.from,
+            toDate: options.to,
+          });
 
           if (prs.length > 0) {
             formatter.printRepositorySection(repo.name);
 
             for (const pr of prs) {
               const commits = shouldFetchCommits
-                ? await githubService.getPullRequestCommits(
-                    username,
-                    repo.name,
-                    pr.number,
-                  )
+                ? await githubService.getPullRequestCommits({
+                    owner: username,
+                    repo: repo.name,
+                    pullNumber: pr.number,
+                  })
                 : [];
 
               formatter.printPullRequest(pr, commits);
@@ -133,12 +133,12 @@ async function main() {
 
         // Print summary
         const totalPrs = repos.reduce(async (acc, repo) => {
-          const prs = await githubService.getRepositoryPullRequests(
-            username,
-            repo.name,
-            options.from,
-            options.to,
-          );
+          const prs = await githubService.getRepositoryPullRequests({
+            owner: username,
+            repo: repo.name,
+            fromDate: options.from,
+            toDate: options.to,
+          });
           return (await acc) + prs.length;
         }, Promise.resolve(0));
 
