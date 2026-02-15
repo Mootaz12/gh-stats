@@ -5,13 +5,19 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "bin": {
+    "agent-gh": "./dist/cli.js"
+  },
   "scripts": {
     "build": "nest build",
+    "build:cli": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
+    "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "cli": "ts-node src/cli.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -23,6 +29,8 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "commander": "^12.1.0",
+    "octokit": "^5.0.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
