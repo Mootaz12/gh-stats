@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { Octokit } from 'octokit';
 import {
   UserProfile,
@@ -10,12 +11,10 @@ import {
   GitHubError,
   RateLimitError,
 } from '@errors/github.errors';
-import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class GitHubService {
   private octokit: Octokit;
-  private logger = new Logger(GitHubService.name);
 
   constructor(token: string | null) {
     this.octokit = new Octokit({ auth: token || undefined });

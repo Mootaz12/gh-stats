@@ -5,6 +5,7 @@ import {
   PullRequest,
   Commit,
 } from '@app-types/github.types';
+import { logDivider } from '@/utils/fmt.utils';
 
 @Injectable()
 export class OutputFormatter {
@@ -18,16 +19,16 @@ export class OutputFormatter {
     console.log(`Followers: ${this.formatNumber(profile.followers)}`);
     console.log(`Following: ${this.formatNumber(profile.following)}`);
     console.log(`Profile: ${profile.profileUrl}`);
-    console.log();
+    logDivider();
   }
 
   /**
    * Print repository section header
    */
   printRepositorySection(repoName: string): void {
-    console.log('----------------------------------------');
+    logDivider();
     console.log(`Repository: ${repoName}`);
-    console.log('----------------------------------------');
+    logDivider();
   }
 
   /**
@@ -52,16 +53,16 @@ export class OutputFormatter {
         );
       }
     }
-    console.log();
+    logDivider();
   }
 
   /**
    * Print list of repositories
    */
   printRepositories(repos: Repository[]): void {
-    console.log('----------------------------------------');
+    logDivider();
     console.log('Repositories:');
-    console.log('----------------------------------------');
+    logDivider();
 
     for (const repo of repos) {
       console.log(`${repo.name}`);
@@ -79,13 +80,13 @@ export class OutputFormatter {
    * Print summary statistics
    */
   printSummary(totalPrs: number, totalCommits?: number): void {
-    console.log('----------------------------------------');
+    logDivider();
     console.log('Summary:');
     console.log(`Total PRs: ${totalPrs}`);
     if (totalCommits !== undefined) {
       console.log(`Total commits in PRs: ${totalCommits}`);
     }
-    console.log('----------------------------------------');
+    logDivider();
   }
 
   /**

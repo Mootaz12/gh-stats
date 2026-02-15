@@ -26,7 +26,8 @@
       "@services/*": ["./src/services/*"],
       "@errors/*": ["./src/errors/*"],
       "@app-types/*": ["./src/types/*"],
-      "@common/*": ["./src/common/*"]
+      "@common/*": ["./src/common/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   }
 }
