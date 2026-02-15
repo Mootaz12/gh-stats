@@ -15,16 +15,26 @@ export class AuthService {
    */
   async getToken(): Promise<string | null> {
     // Check for GITHUB_TOKEN
-    console.log('[AUTH] Checking for GITHUB_TOKEN environment variable...');
+    this.logAuthToConsole({
+      type: 'log',
+      msg: 'Checking for GITHUB_TOKEN environment variable...',
+    });
     const githubToken = process.env.GITHUB_TOKEN;
     if (githubToken) {
-      console.log(
-        '[AUTH] Using GITHUB_TOKEN environment variable for authentication\n',
-      );
+      this.logAuthToConsole({
+        type: 'log',
+        msg: 'Using GITHUB_TOKEN environment variable for authentication\n',
+      });
       return githubToken;
     }
-    console.log('[AUTH] GITHUB_TOKEN environment variable not found');
-    console.log('[AUTH] Checking for gh CLI authentication...');
+    this.logAuthToConsole({
+      type: 'warn',
+      msg: 'GITHUB_TOKEN environment variable not found',
+    });
+    this.logAuthToConsole({
+      type: 'log',
+      msg: 'Checking for gh CLI authentication...',
+    });
     // Check for gh CLI
     try {
       // First, check if gh CLI is installed
@@ -34,11 +44,18 @@ export class AuthService {
       });
 
       // gh is installed, ask for permission to use it
-      console.log('[AUTH] GitHub CLI (gh) is installed');
-      console.log(
-        '[AUTH] Would you like to use gh CLI credentials for authentication?',
-      );
-      console.log('[AUTH] This will use your existing gh authentication.');
+      this.logAuthToConsole({
+        type: 'log',
+        msg: 'GitHub CLI (gh) is installed',
+      });
+      this.logAuthToConsole({
+        type: 'log',
+        msg: 'Would you like to use gh CLI credentials for authentication?',
+      });
+      this.logAuthToConsole({
+        type: 'log',
+        msg: 'This will use your existing gh authentication.',
+      });
 
       // Simple prompt using readline
       const readline = require('readline').createInterface({
@@ -62,27 +79,47 @@ export class AuthService {
         }).trim();
 
         if (ghToken) {
-          console.log('[AUTH] Using gh CLI credentials for authentication\n');
+          this.logAuthToConsole({
+            type: 'log',
+            msg: 'Using gh CLI credentials for authentication\n',
+          });
           return ghToken;
         }
       } else {
-        console.log('[AUTH] Skipping gh CLI authentication\n');
+        this.logAuthToConsole({
+          type: 'log',
+          msg: 'Skipping gh CLI authentication\n',
+        });
       }
     } catch (error) {
       // gh CLI not installed or not authenticated
     }
 
     // Fall back to unauthenticated
-    console.warn(
-      '[AUTH] ⚠ Warning: No authentication found. Using unauthenticated requests.',
-    );
-    console.warn(
-      '[AUTH] Rate limit: 60 requests/hour (vs 5000 with authentication)',
-    );
-    console.warn(`[AUTH] To authenticate, either:
+    this.logAuthToConsole({
+      type: 'warn',
+      msg: 'No authentication found. Using unauthenticated requests.',
+    });
+    this.logAuthToConsole({
+      type: 'warn',
+      msg: 'Rate limit: 60 requests/hour (vs 5000 with authentication)',
+    });
+    this.logAuthToConsole({
+      type: 'warn',
+      msg: `To authenticate, either:
     - Set GITHUB_TOKEN environment variable
-    - Install and authenticate with gh CLI (gh auth login)\n`);
+    - Install and authenticate with gh CLI (gh auth login)\n`,
+    });
 
     return null;
+  }
+  logAuthToConsole({
+    type = 'log',
+    msg,
+  }: {
+    type?: 'log' | 'warn';
+    msg: string;
+  }) {
+    console[type](`[AUTH] ${msg}`);
   }
 }

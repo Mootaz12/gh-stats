@@ -86,8 +86,26 @@ async function main() {
     if (shouldFetchRepos || shouldFetchPrs || shouldFetchCommits) {
       const repos = await githubService.getUserRepositories(username);
 
-      if (shouldFetchPrs || shouldFetchCommits) {
-        // Fetch PRs and commits for each repository
+      // Case 1: Only commits (no PRs) - fetch all repository commits
+      if (shouldFetchCommits && !shouldFetchPrs && !shouldFetchRepos) {
+        for (const repo of repos) {
+          const commits = await githubService.getRepositoryCommits(
+            username,
+            repo.name,
+            username, // Filter by the user
+            options.from,
+            options.to,
+          );
+
+          if (commits.length > 0) {
+            formatter.printRepositorySection(repo.name);
+            formatter.printCommits(commits);
+          }
+        }
+      }
+      // Case 2: PRs with or without commits
+      else if (shouldFetchPrs) {
+        // Fetch PRs and optionally their commits
         for (const repo of repos) {
           const prs = await githubService.getRepositoryPullRequests(
             username,
@@ -125,8 +143,9 @@ async function main() {
         }, Promise.resolve(0));
 
         formatter.printSummary(await totalPrs);
-      } else if (shouldFetchRepos) {
-        // Just display repository list
+      }
+      // Case 3: Just repositories
+      else if (shouldFetchRepos) {
         formatter.printRepositories(repos);
       }
     }

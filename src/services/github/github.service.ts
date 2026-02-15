@@ -189,4 +189,52 @@ export class GitHubService {
       return [];
     }
   }
+
+  /**
+   * Fetch all commits for a repository (with optional date filtering and author filtering)
+   */
+  async getRepositoryCommits(
+    owner: string,
+    repo: string,
+    author?: string,
+    fromDate?: string,
+    toDate?: string,
+  ): Promise<Commit[]> {
+    const commits: Commit[] = [];
+    let page = 1;
+    const perPage = 100;
+
+    try {
+      while (true) {
+        const { data } = await this.octokit.rest.repos.listCommits({
+          owner,
+          repo,
+          author, // Filter by author if provided
+          since: fromDate, // ISO 8601 date string
+          until: toDate, // ISO 8601 date string
+          per_page: perPage,
+          page,
+        });
+
+        if (data.length === 0) break;
+
+        commits.push(
+          ...data.map((commit) => ({
+            sha: commit.sha.substring(0, 7),
+            message: commit.commit.message.split('\n')[0], // First line only
+            author: commit.commit.author?.name || 'unknown',
+            date: commit.commit.author?.date || '',
+          })),
+        );
+
+        if (data.length < perPage) break;
+        page++;
+      }
+
+      return commits;
+    } catch (error: any) {
+      // Repository might not exist or be accessible
+      return [];
+    }
+  }
 }

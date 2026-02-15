@@ -53,7 +53,22 @@ export class OutputFormatter {
         );
       }
     }
-    logDivider();
+    console.log();
+  }
+
+  /**
+   * Print standalone commits (not associated with a PR)
+   */
+  printCommits(commits: Commit[]): void {
+    console.log('Commits:');
+    for (const commit of commits) {
+      const date = this.formatDate(commit.date);
+      console.log(
+        `${commit.sha} ${this.truncate(commit.message, 50).padEnd(50)} ` +
+          `Author: ${commit.author.padEnd(20)} Date: ${date}`,
+      );
+    }
+    console.log();
   }
 
   /**
